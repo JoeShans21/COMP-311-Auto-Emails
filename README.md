@@ -1,18 +1,18 @@
-# Gradescope Analysis and Email System
+# Gradescope Analysis and Email System (Gmail Version)
 
-A Python tool for analyzing student performance from Gradescope CSV exports and sending personalized encouraging emails based on performance trends.
+A Python tool for analyzing student performance from Gradescope CSV exports and sending personalized encouraging emails via Gmail based on performance trends.
 
 ## Features
 
 - **Performance Analysis**: Analyzes student performance across multiple quizzes
-- **Student Categorization**: Automatically categorizes students into:
-  - **Excelling**: High scores on both quizzes
-  - **Improving**: Low on quiz 2, high on quiz 3
-  - **Struggling**: Low scores on both quizzes
-  - **Declining**: High on quiz 2, low on quiz 3
-  - **Consistent**: Similar performance on both quizzes
+- **Smart Student Categorization**: Automatically categorizes students into:
+  - **Excelling**: High scores on both quizzes (≥85%)
+  - **Improving**: Significant improvement (15+ points) OR low Quiz 2 but good Quiz 3
+  - **Struggling**: Low scores on both quizzes (<60%)
+  - **Declining**: High Quiz 2 but low Quiz 3 (≥75% → <60%)
+  - **Consistent**: Similar performance or moderate changes
 - **Personalized Emails**: Sends encouraging messages tailored to each student's performance
-- **University Email Support**: Configured for UNC and other university email systems
+- **Gmail Integration**: Uses Gmail SMTP for reliable email delivery
 - **Dry Run Mode**: Preview emails before sending
 
 ## Setup
@@ -27,10 +27,12 @@ A Python tool for analyzing student performance from Gradescope CSV exports and 
    - Name them `three-scores.csv` and `two-scores.csv` (or modify the script)
    - Ensure the CSV files have columns: Name, Email, Total Score, Max Points
 
-3. **Run the Analysis**:
-   ```bash
-   python demo_analysis.py
-   ```
+3. **Gmail Setup** (Required for sending emails):
+   - Enable 2-Factor Authentication on your Gmail account
+   - Generate an App Password:
+     - Go to: https://myaccount.google.com/security
+     - Click '2-Step Verification' → 'App passwords'
+     - Generate password for 'Mail'
 
 ## Usage
 
@@ -39,50 +41,31 @@ A Python tool for analyzing student performance from Gradescope CSV exports and 
 python demo_analysis.py
 ```
 
-### Full Analysis with Email Options
+### Full Analysis with Gmail Integration
 ```bash
 python gradescope_analyzer.py
 ```
 
-### Test Email Functionality
-```bash
-# Quick test with UNC settings
-python quick_email_test.py
+### Gmail Configuration
 
-# Full test with multiple email providers
-python test_email.py
-```
+The system uses Gmail for reliable email delivery:
 
-### Email Configuration
-
-The system supports multiple email providers:
-
-#### UNC Chapel Hill (Office 365)
-- SMTP Server: `smtp.office365.com`
-- Port: `587`
-- Use your UNC email and password
-
-#### Gmail
-- SMTP Server: `smtp.gmail.com`
-- Port: `587`
-- Requires app password (not regular password)
-
-#### Other Universities
-- Check your university's IT documentation for SMTP settings
-- Common ports: 587 (TLS) or 465 (SSL)
+- **SMTP Server**: `smtp.gmail.com`
+- **Port**: `587`
+- **Authentication**: Gmail App Password (not regular password)
+- **Setup**: Requires 2-Factor Authentication enabled
 
 ## File Structure
 
 ```
-311-proj/
-├── gradescope_analyzer.py    # Main analysis and email system
+COMP-311-Auto-Emails/
+├── gradescope_analyzer.py    # Main analysis and Gmail email system
 ├── demo_analysis.py          # Safe demo without sending emails
-├── test_email.py             # Full email testing with multiple providers
-├── quick_email_test.py       # Quick email test with UNC settings
-├── email_config.py           # Email configuration for universities
+├── gmail_test.py             # Gmail email testing
 ├── requirements.txt          # Python dependencies
 ├── three-scores.csv         # Gradescope data (Quiz 3)
 ├── two-scores.csv           # Gradescope data (Quiz 2)
+├── gradescope_analysis_*.json # Generated analysis reports
 └── README.md                # This file
 ```
 
@@ -90,18 +73,18 @@ The system supports multiple email providers:
 
 The system includes personalized email templates for each student category:
 
-- **Excelling Students**: Recognition for consistent high performance
-- **Improving Students**: Congratulations on improvement with specific metrics
-- **Struggling Students**: Supportive message with offers of help
-- **Declining Students**: Concerned but supportive message
+- **Excelling Students**: Recognition for consistent high performance (≥85% on both quizzes)
+- **Improving Students**: Congratulations on significant improvement with specific metrics
+- **Struggling Students**: Supportive message with offers of help (both scores <60%)
+- **Declining Students**: Concerned but supportive message (high Quiz 2, low Quiz 3)
 - **Consistent Students**: Acknowledgment of steady progress
 
 ## Security Notes
 
 - Never hardcode passwords in your code
-- Use environment variables for sensitive information
-- Consider using OAuth2 for better security
+- Use Gmail App Passwords (not regular passwords)
 - Always test with dry run mode first
+- Gmail App Passwords are more secure than regular passwords
 
 ## Example Output
 
@@ -110,20 +93,30 @@ GRADESCOPE PERFORMANCE ANALYSIS REPORT
 =====================================
 Generated on: 2025-01-27 10:30:00
 
-Total Students Analyzed: 150
+Total Students Analyzed: 160
 
-EXCELLING STUDENTS (45 students):
+IMPROVING STUDENTS (30 students):
 ----------------------------------------
-• John Doe (john@unc.edu)
-  Quiz 2: 95.0%
-  Quiz 3: 92.0%
+• Neha Bharadwaj (nehab4@ad.unc.edu)
+  Quiz 2: 56.0%
+  Quiz 3: 84.0%
+  Improvement: +28.0%
 
-IMPROVING STUDENTS (23 students):
+• Zabdiel Villalobos (zabdielv@unc.edu)
+  Quiz 2: 0.0%
+  Quiz 3: 74.0%
+
+DECLINING STUDENTS (4 students):
 ----------------------------------------
-• Jane Smith (jane@unc.edu)
-  Quiz 2: 75.0%
-  Quiz 3: 88.0%
-  Improvement: +13.0%
+• Rachel Alvis (rcalvis@unc.edu)
+  Quiz 2: 77.0%
+  Quiz 3: 36.0%
+
+CONSISTENT STUDENTS (26 students):
+----------------------------------------
+• Mann Barot (manbar@unc.edu)
+  Quiz 2: 89.0%
+  Quiz 3: 84.0%
 ```
 
 ## Troubleshooting
@@ -131,14 +124,17 @@ IMPROVING STUDENTS (23 students):
 ### Common Issues
 
 1. **CSV File Not Found**: Ensure your CSV files are in the same directory as the script
-2. **Email Authentication Failed**: Check your email credentials and SMTP settings
-3. **Permission Denied**: Some universities require specific authentication methods
+2. **Gmail Authentication Failed**: 
+   - Ensure 2-Factor Authentication is enabled
+   - Use App Password (not regular password)
+   - Check that "Less secure app access" is not the issue (use App Passwords instead)
+3. **Permission Denied**: Gmail App Passwords should resolve most authentication issues
 
 ### Getting Help
 
-- Check your university's IT documentation for email settings
-- Test with dry run mode first
-- Verify CSV file format matches expected columns
+- Test with dry run mode first: `python demo_analysis.py`
+- Verify CSV file format matches expected columns (Name, Email, Total Score, Max Points)
+- Check Gmail App Password setup at: https://myaccount.google.com/security
 
 ## License
 
