@@ -86,39 +86,6 @@ The system includes personalized email templates for each student category:
 - Always test with dry run mode first
 - Gmail App Passwords are more secure than regular passwords
 
-## Example Output
-
-```
-GRADESCOPE PERFORMANCE ANALYSIS REPORT
-=====================================
-Generated on: 2025-01-27 10:30:00
-
-Total Students Analyzed: 160
-
-IMPROVING STUDENTS (30 students):
-----------------------------------------
-• Neha Bharadwaj (nehab4@ad.unc.edu)
-  Quiz 2: 56.0%
-  Quiz 3: 84.0%
-  Improvement: +28.0%
-
-• Zabdiel Villalobos (zabdielv@unc.edu)
-  Quiz 2: 0.0%
-  Quiz 3: 74.0%
-
-DECLINING STUDENTS (4 students):
-----------------------------------------
-• Rachel Alvis (rcalvis@unc.edu)
-  Quiz 2: 77.0%
-  Quiz 3: 36.0%
-
-CONSISTENT STUDENTS (26 students):
-----------------------------------------
-• Mann Barot (manbar@unc.edu)
-  Quiz 2: 89.0%
-  Quiz 3: 84.0%
-```
-
 ## Troubleshooting
 
 ### Common Issues
